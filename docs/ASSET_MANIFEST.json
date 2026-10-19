@@ -1,0 +1,142 @@
+{
+  "brand": "JPM COIN",
+  "ticker": "JPMD",
+  "version": "2.1",
+  "updated": "2026-10-19",
+  "notes": "No artwork files changed in 2.1. Added GitHub Pages basePath /JPMD, section-specific CSS/GSAP motion, and self-hosted display/sans fonts. Background WebPs remain the only scene imagery.",
+  "videoFiles": 0,
+  "assets": [
+    {
+      "path": "public/images/backgrounds/scene-1.svg",
+      "type": "SVG",
+      "bytes": 74207,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-1.webp",
+      "type": "WEBP",
+      "bytes": 85764,
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-2.svg",
+      "type": "SVG",
+      "bytes": 64879,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-2.webp",
+      "type": "WEBP",
+      "bytes": 104534,
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-3.svg",
+      "type": "SVG",
+      "bytes": 6370,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-3.webp",
+      "type": "WEBP",
+      "bytes": 112524,
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-4.svg",
+      "type": "SVG",
+      "bytes": 12900,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-4.webp",
+      "type": "WEBP",
+      "bytes": 50954,
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-5.svg",
+      "type": "SVG",
+      "bytes": 31981,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-5.webp",
+      "type": "WEBP",
+      "bytes": 86414,
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-6.svg",
+      "type": "SVG",
+      "bytes": 12546,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/backgrounds/scene-6.webp",
+      "type": "WEBP",
+      "bytes": 66416,
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "usage": "clean text-free section background; WebP and editable SVG"
+    },
+    {
+      "path": "public/images/favicon.png",
+      "type": "PNG",
+      "bytes": 7886,
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "usage": "supporting icon"
+    },
+    {
+      "path": "public/images/logo-original.png",
+      "type": "PNG",
+      "bytes": 219908,
+      "width": 1024,
+      "height": 1024,
+      "transparent": true,
+      "usage": "original JPMD circular logo, alpha outside circle"
+    },
+    {
+      "path": "public/images/logo-original.svg",
+      "type": "SVG",
+      "bytes": 1262,
+      "usage": "original JPMD circular logo, alpha outside circle"
+    },
+    {
+      "path": "public/images/social-banner.webp",
+      "type": "WEBP",
+      "bytes": 63054,
+      "width": 1500,
+      "height": 500,
+      "transparent": false,
+      "usage": "social banner with brand typography"
+    },
+    {
+      "path": "public/images/telegram-banner.webp",
+      "type": "WEBP",
+      "bytes": 48308,
+      "width": 1100,
+      "height": 520,
+      "transparent": false,
+      "usage": "social banner with brand typography"
+    }
+  ]
+}
