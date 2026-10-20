@@ -1,14 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import {
-  ArrowRight, ArrowUpRight, ChevronDown, Copy, Check, Menu, X,
-  Wallet, Coins, ArrowLeftRight, CheckCircle2, ShieldCheck, ExternalLink,
-  Globe2, Radio, CircleHelp, LockKeyhole, MoveUpRight,
-} from "lucide-react";
+import { assetSrc, assets, type AssetId } from "../components/assets";
 import { token } from "../components/config";
-import { publicAsset } from "../components/paths";
 
 const navigation = [
   { label: "Home", id: "home" },
@@ -20,37 +14,151 @@ const navigation = [
   { label: "FAQ", id: "faq" },
 ];
 
+const chapters = [
+  {
+    no: "01",
+    icon: "icon_tradition" as AssetId,
+    art: "story_1" as AssetId,
+    eyebrow: "THE CLOSING BELL",
+    title: "4:00 p.m. The suits went home.",
+    copy: "Briefcases clicked shut. Calculators were told they had done enough. Somewhere a spreadsheet beeped like it had personally saved the quarter. Downtown agreed to dim the lights, because tradition still believes money needs a bedtime and a weekend.",
+  },
+  {
+    no: "02",
+    icon: "icon_ethereum" as AssetId,
+    art: "story_2" as AssetId,
+    eyebrow: "THE MEMO THAT BOUNCED",
+    title: "Ethereum did not get the memo.",
+    copy: "A blockchain wandered into the financial district and asked why settlement should wait for Monday. Twelve executives opened a slide deck. Three scheduled a meeting about the meeting. The network kept producing blocks, unimpressed by office hours, dress codes, or the concept of closed.",
+  },
+  {
+    no: "03",
+    icon: "icon_innovation" as AssetId,
+    art: "story_3" as AssetId,
+    eyebrow: "THE NIGHT SHIFT",
+    title: "Then the meme clocked in.",
+    copy: "JPM COIN ($JPMD) is not a bank, not a deposit, and not on the earnings-call guest list. It is an independent community joke about finance discovering a clock with no off switch. The punchline stays on-chain. The disclaimer stays on the marquee.",
+  },
+];
+
+const storyIcons: { id: AssetId; label: string }[] = [
+  { id: "icon_tradition", label: "Tradition" },
+  { id: "icon_innovation", label: "Invention" },
+  { id: "icon_community", label: "Community" },
+  { id: "icon_ethereum", label: "Ethereum" },
+  { id: "icon_growth", label: "Curiosity" },
+];
+
+const buySteps: { no: string; art: AssetId; icon: AssetId; title: string; copy: string }[] = [
+  { no: "01", art: "step1_wallet", icon: "icon_wallet", title: "Prepare a wallet", copy: "Use a trusted self-custody Ethereum wallet. Write the recovery phrase down somewhere that is not a screenshot named 'final-final'." },
+  { no: "02", art: "step2_eth", icon: "icon_eth", title: "Get some ETH", copy: "ETH pays for the swap and for gas. The network does not invoice you later. It asks up front, politely and immutably." },
+  { no: "03", art: "step3_swap", icon: "icon_swap", title: "Verify, then swap", copy: "Match the exact contract, the pool, and the permissions. A familiar ticker is not a signature. Wait until this site publishes a verified address." },
+  { no: "04", art: "step4_complete", icon: "icon_check", title: "Read the receipt", copy: "Open the transaction on an Ethereum explorer. Confirm what you received. Nothing on this page is a promise of profit." },
+];
+
 const questions = [
-  { q: "Is this the JPM Coin issued by JPMorgan?", a: "No. JPM COIN ($JPMD) here is an independent community meme-token concept. It is not affiliated with, authorized by, sponsored by, or endorsed by JPMorgan Chase, Kinexys or the bank's JPM Coin deposit product. It is not bank-backed or redeemable for US dollars." },
+  { q: "Is this the JPM Coin issued by JPMorgan?", a: "No. JPM COIN ($JPMD) here is an independent community meme-token concept. It is not affiliated with, authorized by, sponsored by, or endorsed by JPMorgan Chase, Kinexys, or the bank's JPM Coin deposit product. It is not bank-backed or redeemable for US dollars." },
   { q: "What network is the intended token on?", a: "Ethereum mainnet. Do not rely on ticker symbols alone: several unrelated tokens may use JPMD. Verify the exact official contract when one is published." },
-  { q: "Is there a live, verified contract address?", a: token.contractAddress ? `The configured address is ${token.contractAddress}. Independently verify it on-chain before interacting.` : "No contract has been configured for this website yet. The project status is coming soon, and swap links are disabled until the contract is confirmed." },
+  { q: "Is there a live, verified contract address?", a: token.contractAddress ? `The configured address is ${token.contractAddress}. Independently verify it on-chain before interacting.` : "No contract has been configured for this website yet. Swap links stay off until the contract is confirmed." },
   { q: "What is the planned supply and tax?", a: `The project configuration targets ${token.supply} tokens and ${token.buyTax} buy / ${token.sellTax} sell tax. These are intended values and must be checked against the deployed contract.` },
-  { q: "Is liquidity burned and ownership renounced?", a: "Neither action is claimed complete here. The live token contract, LP burn transaction, and renouncement transaction need to be independently verified before these statuses can change." },
-  { q: "How can I buy?", a: "Set up an Ethereum wallet, acquire ETH for transactions and gas, then wait for a verified contract address. Check contract permissions, liquidity and execution details before any swap. No price gain is promised." },
+  { q: "Is liquidity burned and ownership renounced?", a: "Neither action is claimed complete here. Liquidity status and ownership status stay unverified until real on-chain proof is added to the site configuration." },
+  { q: "How can I buy?", a: "Set up an Ethereum wallet, acquire ETH for the swap and for gas, then wait for a verified contract. Check permissions and the pool before any trade. No price gain is promised." },
 ];
 
-const storyChapters = [
-  { number: "01", eyebrow: "THE CLOSING BELL", title: "4:00 PM. TIME TO GO HOME?", description: "The traders packed the calculators, straightened the ties, and told the markets to behave until morning. A spreadsheet beeped like it had done something heroic. Downtown lights dimmed on schedule, because tradition still believes money needs a bedtime." },
-  { number: "02", eyebrow: "THE PLOT TWIST", title: "ETHEREUM DIDN'T GET THE MEMO.", description: "A blockchain wandered into the financial district and asked why settlement should wait for a weekday. Twelve executives opened a slide deck. Three booked a meeting about the meeting. The network kept producing blocks, unimpressed by office hours." },
-  { number: "03", eyebrow: "THE MEME AWAKENS", title: "THE NIGHT SHIFT HAS ENTERED.", description: "Then came JPM COIN ($JPMD): not a bank, not a deposit, and not on the earnings-call guest list. An independent community meme about finance discovering a clock with no off switch. The joke is the culture. The chain is the punchline. The disclaimer stays on the marquee." },
-];
+const scenes = {
+  a: [28, 34, 31, 44, 40, 52, 47, 58, 49, 63, 55, 68, 61, 74, 66, 79, 71, 84, 76, 88],
+  b: [62, 58, 66, 49, 54, 47, 41, 46, 38, 43, 36, 40, 34, 48, 44, 52, 49, 57, 63, 70],
+  c: [40, 42, 39, 48, 46, 55, 52, 61, 58, 67, 63, 72, 68, 76, 71, 80, 74, 83, 78, 86],
+};
 
-const points = [31, 35, 32, 42, 38, 47, 44, 51, 46, 54, 48, 57, 55, 63, 59, 66, 61, 72, 68, 74, 70, 79, 74, 84];
-function pathFor(d: number[]) { return d.map((n,i)=>`${i===0?"M":"L"} ${10+i*22} ${185-n*1.8}`).join(" "); }
+function pathFor(data: number[]) {
+  return data.map((n, i) => `${i === 0 ? "M" : "L"} ${16 + i * 28} ${168 - n * 1.35}`).join(" ");
+}
 
-function AbstractTerminal() {
- const [view,setView] = useState<"a"|"b">("a");
- const data = view === "a" ? points : [48,46,52,42,47,45,38,43,34,37,29,35,32,40,36,45,43,39,49,46,58,53,57,61];
- return <div className="terminal" aria-label="Illustrative chart, not live market data">
-   <div className="terminalHeader"><span className="led"/><span>MARKET TERMINAL</span><span className="demoLabel">ILLUSTRATION · NOT LIVE</span></div>
-   <div className="terminalBody"><div className="terminalBar"><span>JPMD / ETH <small>CONCEPT DISPLAY</small></span><div className="terminalTabs"><button aria-pressed={view==="a"} onClick={()=>setView("a")}>SCENE A</button><button aria-pressed={view==="b"} onClick={()=>setView("b")}>SCENE B</button></div></div>
-   <svg key={view} className="illustrativeChart" viewBox="0 0 550 210" role="img" aria-label="Decorative non-financial simulated price-line chart">
-    {Array.from({length:6},(_,i)=><line key={i} x1="0" y1={i*40+5} x2="550" y2={i*40+5} stroke="#49718c" strokeOpacity=".22" strokeDasharray="4 8"/>)}
-    <path className="chartLine" pathLength={1} d={pathFor(data)} fill="none" stroke="#eec07d" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d={pathFor(data)+" L 516 210 L 10 210 Z"} fill="#eec07d" fillOpacity=".04"/>
-   </svg><div className="terminalFooter"><span>SIMULATED PATH ONLY</span><span>NO MARKET CONNECTION</span></div>
-   </div>
- </div>;
+function Picture({ id, alt = "", className, priority = false }: { id: AssetId; alt?: string; className?: string; priority?: boolean }) {
+  const item = assets[id];
+  return (
+    <img
+      src={assetSrc(id)}
+      alt={alt}
+      width={item.width}
+      height={item.height}
+      className={className}
+      decoding="async"
+      loading={priority ? "eager" : "lazy"}
+    />
+  );
+}
+
+function Scene({ id, className = "" }: { id: AssetId; className?: string }) {
+  return <div className={`scene ${className}`} style={{ backgroundImage: `url(${assetSrc(id)})` }} aria-hidden="true" />;
+}
+
+function Atmosphere({ id }: { id: AssetId }) {
+  return <div className="atmosphere" style={{ backgroundImage: `url(${assetSrc(id)})` }} aria-hidden="true" />;
+}
+
+function Action({
+  children,
+  onClick,
+  href,
+  tone = "primary",
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  href?: string;
+  tone?: "primary" | "ghost";
+}) {
+  const className = tone === "ghost" ? "btn ghost" : "btn";
+  const style = { backgroundImage: `url(${assetSrc(tone === "ghost" ? "btn_secondary" : "btn_primary")})` };
+  if (href) {
+    return <a className={className} style={style} href={href} target="_blank" rel="noreferrer">{children}</a>;
+  }
+  return <button className={className} style={style} type="button" onClick={onClick}>{children}</button>;
+}
+
+function Pending({ children }: { children: React.ReactNode }) {
+  return (
+    <button className="btn ghost" style={{ backgroundImage: `url(${assetSrc("btn_secondary")})` }} type="button" disabled>
+      {children}
+    </button>
+  );
+}
+
+function Terminal() {
+  const [view, setView] = useState<"a" | "b" | "c">("a");
+  const data = scenes[view];
+  return (
+    <div className="terminal" aria-label="Illustrative chart, not live market data">
+      <div className="terminalHeader">
+        <span className="led" />
+        <span>MARKET TERMINAL</span>
+        <span className="demoLabel">ILLUSTRATION · NOT LIVE</span>
+      </div>
+      <div className="terminalBody">
+        <div className="terminalBar">
+          <span>JPMD / ETH <small>CONCEPT DISPLAY</small></span>
+          <div className="terminalTabs" role="group" aria-label="Illustration scenes">
+            {(["a", "b", "c"] as const).map((key) => (
+              <button key={key} type="button" aria-pressed={view === key} onClick={() => setView(key)}>
+                SCENE {key.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+        <svg key={view} className="illustrativeChart" viewBox="0 0 560 190" role="img" aria-label="Decorative simulated line, not a price">
+          {Array.from({ length: 5 }, (_, i) => (
+            <line key={i} x1="0" y1={18 + i * 36} x2="560" y2={18 + i * 36} />
+          ))}
+          <path className="chartLine" pathLength={1} d={pathFor(data)} />
+        </svg>
+        <div className="terminalFooter">
+          <span>SIMULATED PATH ONLY</span>
+          <span>NO MARKET CONNECTION</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -58,156 +166,402 @@ export default function Home() {
   const [menu, setMenu] = useState(false);
   const [active, setActive] = useState("home");
   const [progress, setProgress] = useState(0);
-  const [expanded, setExpanded] = useState<number>(-1);
+  const [expanded, setExpanded] = useState(-1);
   const [copied, setCopied] = useState(false);
+  const live = Boolean(token.contractAddress && token.swapUrl);
 
   useEffect(() => {
     let context: { revert: () => void } | undefined;
     let mounted = true;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mobile = window.matchMedia("(max-width: 760px)").matches;
     const run = async () => {
       const { gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
       if (!mounted || !root.current) return;
       gsap.registerPlugin(ScrollTrigger);
       context = gsap.context(() => {
-        gsap.from(".heroInner", { opacity: 0, y: 34, duration: 1.15, ease: "power3.out" });
-        gsap.fromTo(".hero .sceneArtwork", { yPercent: -1.5 }, {
-          yPercent: 2.5, ease: "none",
-          scrollTrigger: { trigger: "#home", start: "top top", end: "bottom top", scrub: 1.6 },
+        gsap.from(".heroRise", { y: mobile ? 16 : 32, opacity: 0, stagger: 0.1, duration: mobile ? 0.55 : 0.95, ease: "power3.out" });
+        gsap.from(".heroFloat", { opacity: 0, y: 18, stagger: 0.12, duration: 0.8, delay: 0.25, ease: "power2.out" });
+        if (!mobile) {
+          gsap.fromTo(".hero .scene", { yPercent: -2 }, {
+            yPercent: 4, ease: "none",
+            scrollTrigger: { trigger: "#home", start: "top top", end: "bottom top", scrub: 1.4 },
+          });
+        }
+        gsap.from(".chapter", {
+          y: 48, opacity: 0, stagger: 0.18, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: ".chapterList", start: "top 80%", once: true },
         });
-        gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
-          gsap.fromTo(el, { opacity: 0, y: 42 }, { opacity: 1, y: 0, duration: 1.05, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 91%", once: true } });
+        gsap.from(".vaultDoor", {
+          scale: 0.9, opacity: 0, duration: 1, ease: "power3.out",
+          scrollTrigger: { trigger: ".vaultStage", start: "top 78%", once: true },
         });
-        gsap.from(".storyCard", {
-          opacity: 0, y: 52, stagger: 0.18, duration: 0.95, ease: "power3.out",
-          scrollTrigger: { trigger: ".storySequence", start: "top 84%", once: true },
+        gsap.from(".vaultCard", {
+          y: 26, opacity: 0, stagger: 0.07, duration: 0.7, ease: "power2.out",
+          scrollTrigger: { trigger: ".vaultGrid", start: "top 82%", once: true },
         });
-        gsap.from(".vaultTile", {
-          opacity: 0, y: 30, stagger: 0.07, duration: 0.72, ease: "power2.out",
-          scrollTrigger: { trigger: ".vaultGrid", start: "top 86%", once: true },
+        gsap.from(".step", {
+          y: 28, opacity: 0, stagger: 0.12, duration: 0.7, ease: "power2.out",
+          scrollTrigger: { trigger: ".steps", start: "top 80%", once: true },
         });
-        gsap.from(".stepCard", {
-          opacity: 0, x: 18, stagger: 0.14, duration: 0.7, ease: "power2.out",
-          scrollTrigger: { trigger: ".steps", start: "top 84%", once: true },
+        gsap.from(".socialCard", {
+          y: 22, opacity: 0, stagger: 0.08, duration: 0.65, ease: "power2.out",
+          scrollTrigger: { trigger: ".socialGrid", start: "top 84%", once: true },
         });
       }, root);
     };
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) void run();
-    const updateScroll = () => {
-      const html = document.documentElement;
-      const range = Math.max(1, html.scrollHeight - window.innerHeight);
+    if (!reduced) void run();
+
+    const onScroll = () => {
+      const range = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       setProgress((window.scrollY / range) * 100);
       let current = "home";
       navigation.forEach((link) => {
         const el = document.getElementById(link.id);
-        if (el && el.getBoundingClientRect().top < window.innerHeight * .42) current = link.id;
+        if (el && el.getBoundingClientRect().top < window.innerHeight * 0.38) current = link.id;
       });
       setActive(current);
     };
-    window.addEventListener("scroll", updateScroll, { passive: true });
-    updateScroll();
-    return () => { mounted = false; window.removeEventListener("scroll", updateScroll); context?.revert(); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      mounted = false;
+      window.removeEventListener("scroll", onScroll);
+      context?.revert();
+    };
   }, []);
 
-  const scrollTo = (id: string) => { setMenu(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
+  const scrollTo = (id: string) => {
+    setMenu(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const copyAddress = async () => {
     if (!token.contractAddress || !navigator.clipboard) return;
-    try { await navigator.clipboard.writeText(token.contractAddress); setCopied(true); window.setTimeout(() => setCopied(false), 1600); } catch { setCopied(false); }
+    try {
+      await navigator.clipboard.writeText(token.contractAddress);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
   };
-  const isLive = Boolean(token.contractAddress && token.swapUrl);
-  return <div className="site" ref={root}>
-    <div className="readingProgress" style={{ transform: `scaleX(${progress/100})` }}/>
-    <a href="#story" className="skipLink">Skip to content</a>
-    <header className="top">
-      <a href="#home" className="brand" aria-label="JPM COIN home"><Image src={publicAsset("/images/logo-original.png")} width={46} height={46} alt="Independent JPMD gold coin icon"/><span>JPM COIN <small>— $JPMD —</small></span></a>
-      <nav aria-label="Main navigation">{navigation.map(l => <button className={active===l.id?"selected":""} aria-current={active===l.id?"true":undefined} key={l.id} onClick={()=>scrollTo(l.id)}>{l.label}</button>)}</nav>
-      <button className="button navbuy" onClick={()=>scrollTo(isLive ? "buy" : "vault")}>{isLive ? "BUY $JPMD" : "LAUNCH STATUS"}<ArrowUpRight size={15}/></button>
-      <button aria-label={menu?"Close menu":"Open menu"} aria-expanded={menu} className="mobilemenu" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
-    </header>
-    {menu && <div className="mobilelinks">{navigation.map(l=><button key={l.id} onClick={()=>scrollTo(l.id)}>{l.label}</button>)}</div>}
 
-    <main>
-      <section id="home" className="section hero">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-1.webp")})`}} aria-hidden="true"/>
-        <div className="heroInner"><p className="eyebrow"><span className="eyebrowDot"/> WALL STREET MEETS ETHEREUM</p>
-          <h1>THE MONEY<br/>NEVER <em>SLEEPS.</em></h1>
-          <p className="heroSub">NEITHER DO THE MEMES.</p>
-          <p className="intro">Meet <strong>JPM COIN ($JPMD)</strong> — an independent Ethereum meme project inspired by finance's greatest identity crisis: discovering that a blockchain doesn't have a closing bell.</p>
-          <div className="actions"><button className="button" onClick={()=>scrollTo("story")}>EXPLORE THE STORY <ArrowRight size={19}/></button><button className="button ghost" onClick={()=>scrollTo("vault")}>THE TOKEN BLUEPRINT <ArrowUpRight size={16}/></button></div>
-          <p className="fine">Not JPMorgan's official JPM Coin. No bank affiliation, deposit backing, or USD redemption.</p>
+  const socials: { id: AssetId; icon: AssetId; name: string; href: string; pending: string }[] = [
+    { id: "community_twitter", icon: "icon_x", name: "X", href: token.twitter, pending: "X LINK PENDING" },
+    { id: "community_telegram", icon: "icon_telegram", name: "Telegram", href: token.telegram, pending: "TELEGRAM LINK PENDING" },
+    { id: "community_discord", icon: "icon_discord", name: "Discord", href: token.discord, pending: "DISCORD LINK PENDING" },
+  ];
+
+  const vaultCards: { icon: AssetId; k: string; v: string; n: string }[] = [
+    { icon: "icon_supply", k: "Planned supply", v: token.supply, n: "Confirm after deployment" },
+    { icon: "icon_tax", k: "Planned buy tax", v: token.buyTax, n: "Unverified until deployed" },
+    { icon: "icon_tax", k: "Planned sell tax", v: token.sellTax, n: "Unverified until deployed" },
+    { icon: "icon_burn", k: "LP status", v: token.liquidityStatus, n: "Proof required" },
+    { icon: "icon_renounce", k: "Ownership", v: token.ownershipStatus, n: "Proof required" },
+    { icon: "icon_contract", k: "Network", v: token.network, n: "ERC-20 target" },
+  ];
+
+  return (
+    <div className="site" ref={root}>
+      <div className="readingProgress" style={{ transform: `scaleX(${progress / 100})` }} />
+      <a className="skipLink" href="#story">Skip to content</a>
+      <header className="top">
+        <a className="brand" href="#home" aria-label="JPM COIN home">
+          <Picture id="logo_circle" alt="" priority />
+          <span>JPM COIN <small>$JPMD</small></span>
+        </a>
+        <nav aria-label="Main navigation">
+          {navigation.map((link) => (
+            <button key={link.id} type="button" className={active === link.id ? "selected" : ""} aria-current={active === link.id ? "true" : undefined} onClick={() => scrollTo(link.id)}>
+              {link.label}
+            </button>
+          ))}
+        </nav>
+        <Action onClick={() => scrollTo(live ? "buy" : "vault")}>{live ? "Buy $JPMD" : "Launch status"}</Action>
+        <button className="mobilemenu" type="button" aria-label={menu ? "Close menu" : "Open menu"} aria-expanded={menu} onClick={() => setMenu((open) => !open)}>
+          <span /><span /><span />
+        </button>
+      </header>
+      {menu && (
+        <div className="mobilelinks">
+          {navigation.map((link) => (
+            <button key={link.id} type="button" onClick={() => scrollTo(link.id)}>{link.label}</button>
+          ))}
         </div>
-        <div className="heroCoinDecor" aria-hidden="true"><Image src={publicAsset("/images/logo-original.png")} width={300} height={300} alt="" priority/></div>
-        <div className="heroVertical" aria-hidden="true">TRADITION / TECHNOLOGY / MEME CULTURE</div>
-        <button className="scrollHint" onClick={()=>scrollTo("story")}>SCROLL TO BEGIN <ChevronDown size={18}/></button>
-        <span className="cornerId">JPMD / ETH · VOL. 001</span>
-      </section>
-      <div className="tickerStrip" aria-label="Project description"><div>✦ THE FINANCIAL NIGHT SHIFT ✦ INDEPENDENT ETHEREUM MEME ✦ ONE BILLION PLANNED SUPPLY ✦ NO BANK AFFILIATION ✦ THE FINANCIAL NIGHT SHIFT ✦ INDEPENDENT ETHEREUM MEME ✦</div></div>
+      )}
 
-      <section id="story" className="section story">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-2.webp")})`}} aria-hidden="true"/>
-        <div className="sectionInner"><div className="reveal sectionLead"><p className="eyebrow">CHAPTER 01 / THE ORIGIN STORY</p><h2>WHEN THE SUITS<br/>MET <em>THE CHAIN.</em></h2><p>They arrived with briefcases. Ethereum arrived with block confirmations. Naturally, nobody had prepared an agenda for this.</p></div>
-          <div className="storySequence">{storyChapters.map(ch=><article key={ch.number} className="storyCard"><span className="storyNumber">{ch.number}</span><div className="storyDetails"><small>{ch.eyebrow}</small><h3>{ch.title}</h3><p>{ch.description}</p></div></article>)}</div>
-          <div className="storyQuote reveal"><span>“</span><p>The exchange closed.<br/>The blockchain asked: <em>what's closed?</em></p></div>
-        </div>
-      </section>
-
-      <section id="floor" className="section floor">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-4.webp")})`}} aria-hidden="true"/>
-        <div className="sectionInner"><div className="sectionLead reveal"><p className="eyebrow">CHAPTER 02 / THE TRADING FLOOR</p><h2>THE DESK THAT<br/><em>NEVER CLOCKS OUT.</em></h2><p>A theatrical control room celebrating open networks, not a prediction engine. The display below is illustrative until a verified JPMD pool is linked.</p></div>
-        <div className="floorGrid reveal"><AbstractTerminal/><div className="floorSide"><div className="floorStat"><small>NETWORK</small><strong>ETHEREUM</strong><span>MAINNET · ERC-20 TARGET</span></div><div className="floorStat"><small>MARKET DATA</small><strong>NOT CONNECTED</strong><span>NO FABRICATED PRICES</span></div><div className="floorStat"><small>POOL VERIFICATION</small><strong>AWAITING CA</strong><span>OFFICIAL CONTRACT REQUIRED</span></div>{token.dextools?<a className="button" href={token.dextools} target="_blank" rel="noreferrer">VIEW VERIFIED POOL <ExternalLink size={16}/></a>:<button className="button ghost" onClick={()=>scrollTo("vault")}>CHECK LAUNCH STATUS <ArrowRight size={16}/></button>}</div></div>
-        </div>
-      </section>
-
-      <section id="vault" className="section vault">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-3.webp")})`}} aria-hidden="true"/>
-        <div className="sectionInner"><div className="sectionLead reveal"><p className="eyebrow">CHAPTER 03 / THE DIGITAL VAULT</p><h2>THE <em>BLUEPRINT.</em><br/>NO SECRET DRAWERS.</h2><p>Built around a simple intended token configuration. Deployment and owner permissions require real on-chain proof, not slogans.</p></div>
-          <div className="vaultGrid">{[
-            {k:"PROJECT",v:token.name,n:"Independent concept"}, {k:"TICKER",v:"$"+token.symbol,n:"Verify contract identity"},
-            {k:"NETWORK",v:token.network,n:"Target blockchain"},{k:"PLANNED SUPPLY",v:token.supply,n:"Confirm after deployment"},
-            {k:"PLANNED BUY TAX",v:token.buyTax,n:"Unverified until deployed"},{k:"PLANNED SELL TAX",v:token.sellTax,n:"Unverified until deployed"},
-            {k:"LP STATUS",v:token.liquidityStatus,n:"Proof required"},{k:"OWNERSHIP",v:token.ownershipStatus,n:"Proof required"},
-          ].map(i=><div className="vaultTile" key={i.k}><small>{i.k}</small><strong>{i.v}</strong><span>{i.n}</span></div>)}</div>
-          <button className="contract reveal" onClick={copyAddress} disabled={!token.contractAddress} aria-label={token.contractAddress?"Copy JPMD contract address":"Contract address not available"}><span className="contractLabel">CONTRACT ADDRESS</span><strong>{token.contractAddress||"COMING SOON — NOT VERIFIED"}</strong>{token.contractAddress?copied?<Check size={18}/>:<Copy size={18}/>:<LockKeyhole size={18}/>}</button>
-          <p className="proofNote"><ShieldCheck size={16}/> LP burn and ownership-renounce claims will be displayed only with on-chain proof links.</p>
-        </div>
-      </section>
-
-      <section id="buy" className="section buy">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-6.webp")})`}} aria-hidden="true"/>
-        <div className="sectionInner"><div className="sectionLead reveal"><p className="eyebrow">CHAPTER 04 / ENTER THE NETWORK</p><h2>FOUR MOVES.<br/><em>ZERO MYSTERY.</em></h2><p>There is no trading link until a verified contract is configured. Here's what the process will look like when the project is ready.</p></div>
-          <div className="steps">{[
-            {Icon:Wallet,title:"PREPARE A WALLET",copy:"Use a trusted self-custody Ethereum wallet."},
-            {Icon:Coins,title:"GET SOME ETH",copy:"You'll need ETH for purchases and network fees."},
-            {Icon:ArrowLeftRight,title:"VERIFY, THEN SWAP",copy:"Confirm the exact contract, pool and permissions."},
-            {Icon:CheckCircle2,title:"CHECK THE RECEIPT",copy:"Review your transaction on an Ethereum explorer."},
-          ].map((step,i)=><div className="stepCard" key={step.title}><span className="stepNum">0{i+1}</span><step.Icon size={34}/><h3>{step.title}</h3><p>{step.copy}</p></div>)}</div>
-          {isLive?<a className="button" href={token.swapUrl} target="_blank" rel="noreferrer">OPEN VERIFIED SWAP <MoveUpRight size={16}/></a>:<button className="button ghost" onClick={()=>scrollTo("vault")}>WAITING FOR VERIFIED CA <LockKeyhole size={16}/></button>}
-          <p className="buyCaution">Never buy a token based only on a matching name or ticker.</p>
-        </div>
-      </section>
-
-      <section id="community" className="section community">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-5.webp")})`}} aria-hidden="true"/>
-        <div className="sectionInner"><div className="sectionLead reveal"><p className="eyebrow">CHAPTER 05 / A GLOBAL NIGHT SHIFT</p><h2>THE WHOLE WORLD<br/><em>IS STILL AWAKE.</em></h2><p>Some people collect vintage watches. We collect jokes about an industry that just discovered the clock has no off button. Bring your memes, your curiosity, and your own research.</p></div>
-          <div className="networkMap reveal" aria-hidden="true">
-            <svg className="networkLines" viewBox="0 0 920 220">
-              <path d="M70 150 C 180 40, 280 190, 390 78 S 620 40, 730 120 860 70, 880 48" />
-              <path d="M120 168 C 250 200, 340 60, 510 150 S 700 190, 840 150" />
-            </svg>
-            {[[8,68],[28,34],[46,72],[63,28],[82,52],[93,22]].map(([x,y],i)=><span className="networkNode" key={i} style={{left:`${x}%`,top:`${y}%`,animationDelay:`${i*0.45}s`}}/>)}
+      <main>
+        <section className="panel hero" id="home">
+          <Scene id="hero_bg" className="pos-hero" />
+          <img className="heroOverlay" src={assetSrc("hero_overlay")} alt="" />
+          <Picture id="hero_light" className="heroFloat light" alt="" priority />
+          <Picture id="hero_smoke" className="heroFloat smoke" alt="" />
+          <Picture id="hero_eth" className="heroFloat eth" alt="" priority />
+          <Picture id="hero_coins" className="heroFloat coins" alt="" />
+          <Picture id="hero_flag" className="heroFloat flag" alt="" />
+          <Picture id="hero_bull" className="heroBullMobile" alt="" priority />
+          <div className="heroLayout wrap">
+            <div className="heroKeep" aria-hidden="true" />
+            <div className="heroCopy">
+              <p className="eyebrow heroRise">Wall Street meets Ethereum</p>
+              <h1 className="heroRise">The money<br />never <em>sleeps.</em></h1>
+              <p className="heroKicker heroRise">Neither do the memes.</p>
+              <p className="lede heroRise">Meet <strong>JPM COIN ($JPMD)</strong> — an independent Ethereum meme about a financial district that just discovered the blockchain does not have a closing bell.</p>
+              <div className="actions heroRise">
+                <Action onClick={() => scrollTo("story")}>Explore the story</Action>
+                <Action tone="ghost" onClick={() => scrollTo("vault")}>The token blueprint</Action>
+              </div>
+              <Picture id="hero_wallstreet" className="wallSign heroRise" alt="" />
+              <p className="fine heroRise">Not JPMorgan&apos;s official JPM Coin. No bank affiliation, deposit backing, or USD redemption.</p>
+            </div>
           </div>
-          <div className="communityActions reveal"><div><Globe2 size={26}/><span>ONE COMMUNITY<br/><strong>ACROSS TIME ZONES</strong></span></div><div><Radio size={26}/><span>UNFILTERED IDEAS<br/><strong>NOT RETURN PROMISES</strong></span></div></div>
-          <div className="actions reveal">{token.telegram?<a href={token.telegram} rel="noreferrer" target="_blank" className="button">JOIN TELEGRAM <ArrowUpRight size={17}/></a>:<span className="button disabled">TELEGRAM LINK PENDING</span>}{token.twitter?<a href={token.twitter} rel="noreferrer" target="_blank" className="button ghost">FOLLOW ON X <ArrowUpRight size={17}/></a>:<span className="button ghost disabled">X LINK PENDING</span>}</div>
-        </div>
-      </section>
+          <button className="scrollHint" type="button" onClick={() => scrollTo("story")}>Scroll to begin</button>
+        </section>
 
-      <section id="faq" className="section faq">
-        <div className="sceneArtwork" style={{backgroundImage:`url(${publicAsset("/images/backgrounds/scene-6.webp")})`}} aria-hidden="true"/>
-        <div className="sectionInner"><div className="sectionLead reveal"><p className="eyebrow">THE IMPORTANT DETAILS</p><h2>THE <em>FINE PRINT.</em></h2><p>A little less shouting, a little more clarity. Because transparency shouldn't require a magnifying glass.</p></div>
-          <div className="faqList reveal">{questions.map((item,i)=><div className="faqItem" key={item.q}><button aria-expanded={expanded===i} aria-controls={`answer-${i}`} onClick={()=>setExpanded(expanded===i?-1:i)}><span><CircleHelp size={17}/>{item.q}</span><span aria-hidden="true">{expanded===i?"−":"+"}</span></button><div className={expanded===i?"faqAnswer open":"faqAnswer"} id={`answer-${i}`} role="region" aria-hidden={expanded!==i}><p>{item.a}</p></div></div>)}</div>
+        <div className="ticker" aria-hidden="true">
+          <div>Independent Ethereum meme · One billion planned supply · No bank affiliation · Illustrations are not live markets · Independent Ethereum meme · One billion planned supply · No bank affiliation · Illustrations are not live markets · </div>
         </div>
-      </section>
-    </main>
-    <footer><div className="footerLogo"><Image width={54} height={54} src={publicAsset("/images/logo-original.png")} alt="JPMD logo"/><div>JPM COIN <span>$JPMD · ETHEREUM</span></div></div><div className="footerDisclaimer"><strong>INDEPENDENT COMMUNITY TOKEN · NOT A BANK PRODUCT</strong><p>This project is not affiliated with, sponsored, endorsed, or issued by JPMorgan Chase, Kinexys, or any affiliate. It is not JPMorgan's JPM Coin deposit token; it is not a stablecoin, bank deposit, or redeemable claim on USD. All cryptocurrency participation carries risk. Nothing here is investment advice.</p></div><button className="backToTop" onClick={()=>scrollTo("home")}>BACK TO TOP ↑</button><small>© 2026 JPM COIN COMMUNITY</small></footer>
-  </div>;
+
+        <section className="panel story" id="story">
+          <Scene id="story_bg" />
+          <div className="fadeTop" aria-hidden="true" />
+          <div className="wrap">
+            <div className="lead split">
+              <div>
+                <p className="eyebrow">Chapter 01 · The origin</p>
+                <h2>When the suits met <em>the chain.</em></h2>
+                <p>They arrived with marble, flags, and a timetable. Ethereum arrived with a crystal and no intention of clocking out. Nobody had prepared an agenda for that.</p>
+              </div>
+              <Picture id="mascot_main" className="mascot" alt="Golden bull mascot of the independent JPMD community" />
+            </div>
+            <div className="iconRow">
+              {storyIcons.map((item) => (
+                <div className="iconChip" key={item.id}>
+                  <Picture id={item.id} alt="" />
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="chapterList">
+              {chapters.map((chapter) => (
+                <article className="chapter" key={chapter.no}>
+                  <div className="chapterMedia">
+                    <Picture id={chapter.art} alt="" />
+                  </div>
+                  <div className="chapterBody">
+                    <Picture id={chapter.icon} alt="" />
+                    <span className="chapterNo">{chapter.no}</span>
+                    <small>{chapter.eyebrow}</small>
+                    <h3>{chapter.title}</h3>
+                    <p>{chapter.copy}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <blockquote className="quoteBlock">
+              <p>The exchange closed. The blockchain asked: <em>what&apos;s closed?</em></p>
+            </blockquote>
+          </div>
+        </section>
+
+        <section className="panel floor" id="floor">
+          <Scene id="bg_grid" />
+          <div className="fadeTop" aria-hidden="true" />
+          <div className="scrim" aria-hidden="true" />
+          <div className="wrap">
+            <div className="lead">
+              <p className="eyebrow">Chapter 02 · The trading floor</p>
+              <h2>The desk that <em>never clocks out.</em></h2>
+              <p>A control room for the idea of an open network. The chart below is a staged illustration. It is not a quote, a forecast, or a connection to any market.</p>
+            </div>
+            <div className="floorGrid">
+              <Terminal />
+              <aside className="floorSide">
+                <figure className="floorArt">
+                  <Picture id="data_panel" alt="Decorative gold and blue market frame, not live data" />
+                  <figcaption>ILLUSTRATION · NOT LIVE</figcaption>
+                </figure>
+                <div className="floorStat"><small>Network</small><strong>Ethereum</strong><span>Mainnet · ERC-20 target</span></div>
+                <div className="floorStat"><small>Market data</small><strong>Not connected</strong><span>No fabricated prices</span></div>
+                <div className="floorStat"><small>Pool</small><strong>{token.contractAddress ? "Check contract" : "Awaiting CA"}</strong><span>Official contract required</span></div>
+                {token.dextools ? <Action href={token.dextools}>View verified pool</Action> : <Action tone="ghost" onClick={() => scrollTo("vault")}>Check launch status</Action>}
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section className="panel vault" id="vault">
+          <Scene id="tokenomics_bg" />
+          <div className="fadeTop" aria-hidden="true" />
+          <div className="scrim light" aria-hidden="true" />
+          <div className="wrap">
+            <div className="lead">
+              <p className="eyebrow">Chapter 03 · The digital vault</p>
+              <h2>The blueprint. <em>No secret drawers.</em></h2>
+              <p>Planned numbers live here. Deployment, taxes, liquidity, and ownership become facts only after the contract is checked on-chain.</p>
+            </div>
+            <div className="vaultStage">
+              <Picture id="coin_stack" className="coinStack" alt="" />
+              <Picture id="vault_door" className="vaultDoor" alt="Golden vault door emblem" />
+              <Picture id="coin_stack" className="coinStack right" alt="" />
+            </div>
+            <div className="vaultGrid">
+              {vaultCards.map((card) => (
+                <article className="vaultCard" key={card.k}>
+                  <Picture id={card.icon} alt="" />
+                  <small>{card.k}</small>
+                  <strong>{card.v}</strong>
+                  <span>{card.n}</span>
+                </article>
+              ))}
+            </div>
+            <button className="contract" type="button" onClick={copyAddress} disabled={!token.contractAddress} aria-label={token.contractAddress ? "Copy JPMD contract address" : "Contract address not available"}>
+              <Picture id="icon_contract" alt="" />
+              <span>Contract address</span>
+              <strong>{token.contractAddress || "Coming soon — not verified"}</strong>
+              <em>{token.contractAddress ? (copied ? "Copied" : "Copy") : "Locked"}</em>
+            </button>
+            <p className="proofNote">LP burn and ownership-renounce claims appear only with on-chain proof links. Neither is confirmed.</p>
+          </div>
+        </section>
+
+        <section className="panel buy" id="buy">
+          <Scene id="buy_bg" />
+          <div className="fadeTop" aria-hidden="true" />
+          <div className="scrim" aria-hidden="true" />
+          <div className="wrap">
+            <div className="lead">
+              <p className="eyebrow">Chapter 04 · Enter the network</p>
+              <h2>Four moves. <em>Zero mystery.</em></h2>
+              <p>There is no trading link until a verified contract and a safe swap URL are configured. This is the path, not the door.</p>
+            </div>
+            <div className="steps">
+              {buySteps.map((step, index) => (
+                <article className="step" key={step.no}>
+                  <div className="stepMedia"><Picture id={step.art} alt="" /></div>
+                  <div className="stepBody">
+                    <Picture id={step.icon} alt="" />
+                    <span>{step.no}</span>
+                    <h3>{step.title}</h3>
+                    <p>{step.copy}</p>
+                  </div>
+                  {index < buySteps.length - 1 && <i className="stepArrow" aria-hidden="true" />}
+                </article>
+              ))}
+            </div>
+            <div className="actions">
+              {live ? <Action href={token.swapUrl}>Open verified swap</Action> : <Pending>Waiting for verified CA</Pending>}
+            </div>
+            <p className="fine">Never buy a token because the name or ticker looks familiar.</p>
+          </div>
+        </section>
+
+        <section className="panel community" id="community">
+          <Scene id="community_bg" className="pos-community" />
+          <Atmosphere id="bg_particles" />
+          <div className="fadeTop" aria-hidden="true" />
+          <div className="scrim light" aria-hidden="true" />
+          <div className="wrap">
+            <div className="lead">
+              <p className="eyebrow">Chapter 05 · A global night shift</p>
+              <h2>The whole world <em>is still awake.</em></h2>
+              <p>One independent community, stretched across time zones. Bring jokes and your own research. Membership counts are not invented here.</p>
+            </div>
+            <div className="socialGrid">
+              <article className="socialCard wide">
+                <Picture id="community_people" alt="City lights used as community artwork" />
+                <div><Picture id="icon_community" alt="" /><h3>One community</h3><p>Across time zones. No fabricated holder counts.</p></div>
+              </article>
+              {socials.map((item) => {
+                const body = (
+                  <>
+                    <Picture id={item.id} alt="" />
+                    <div><Picture id={item.icon} alt="" /><h3>{item.name}</h3><p>{item.href ? "Official link" : item.pending}</p></div>
+                  </>
+                );
+                return item.href ? (
+                  <a className="socialCard" key={item.name} href={item.href} target="_blank" rel="noreferrer">{body}</a>
+                ) : (
+                  <article className="socialCard" key={item.name} aria-disabled="true">{body}</article>
+                );
+              })}
+            </div>
+            <figure className="chartNote">
+              <Picture id="community_chart" alt="" />
+              <figcaption>
+                <Picture id="icon_chart" alt="" />
+                <span>Decorative growth artwork. Not a performance claim, price history, or promise of return.</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section className="panel faq" id="faq">
+          <Scene id="faq_bg" />
+          <Atmosphere id="bg_faq_grid" />
+          <div className="fadeTop" aria-hidden="true" />
+          <div className="scrim light" aria-hidden="true" />
+          <div className="wrap">
+            <div className="lead">
+              <p className="eyebrow">The important details</p>
+              <h2>The <em>fine print.</em></h2>
+              <p>Less shouting, more clarity. The answers below are the project&apos;s actual boundaries.</p>
+            </div>
+            <div className="faqLibrary" style={{ backgroundImage: `url(${assetSrc("faq_panel")})` }}>
+              <div className="faqList">
+                {questions.map((item, index) => {
+                  const open = expanded === index;
+                  return (
+                    <div className="faqItem" key={item.q}>
+                      <button type="button" aria-expanded={open} aria-controls={`answer-${index}`} onClick={() => setExpanded(open ? -1 : index)}>
+                        <span>{item.q}</span>
+                        <Picture id={open ? "icon_minus" : "icon_plus"} alt="" />
+                      </button>
+                      <div className={open ? "faqAnswer open" : "faqAnswer"} id={`answer-${index}`} role="region" aria-hidden={!open}>
+                        <p>{item.a}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <Scene id="footer_bg" className="pos-footer" />
+        <Atmosphere id="bg_stars" />
+        <img className="footerLight" src={assetSrc("bg_lightline")} alt="" />
+        <div className="fadeTop" aria-hidden="true" />
+        <div className="wrap footerGrid">
+          <div className="footerBrand">
+            <Picture id="icon_logo_small" alt="JPM COIN logo" />
+            <div>
+              <strong>JPM COIN</strong>
+              <span>$JPMD · Ethereum</span>
+            </div>
+            <Picture id="icon_eth_small" alt="" />
+          </div>
+          <img className="divider" src={assetSrc("divider")} alt="" />
+          <div className="footerDisclaimer">
+            <strong>Independent community token · Not a bank product</strong>
+            <p>This project is not affiliated with, sponsored, endorsed, or issued by JPMorgan Chase, Kinexys, or any affiliate. It is not JPMorgan&apos;s JPM Coin deposit token. It is not a stablecoin, a bank deposit, or a redeemable claim on USD. Cryptocurrency participation carries risk. Nothing here is investment advice.</p>
+          </div>
+          <div className="brandShots">
+            <a href={assetSrc("banner_1500x500")} download="jpmd-social-banner.png">
+              <Picture id="banner_1500x500" alt="JPM COIN social banner, 1500 by 500" />
+            </a>
+            <a href={assetSrc("tg_banner_1100x520")} download="jpmd-telegram-banner.png">
+              <Picture id="tg_banner_1100x520" alt="JPM COIN Telegram banner, 1100 by 520" />
+            </a>
+          </div>
+          <button className="backToTop" type="button" onClick={() => scrollTo("home")}>Back to top</button>
+          <small>© 2026 JPM COIN community</small>
+        </div>
+      </footer>
+    </div>
+  );
 }

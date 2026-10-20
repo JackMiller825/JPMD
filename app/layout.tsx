@@ -18,6 +18,8 @@ const sans = Outfit({
 
 const siteUrl = "https://jackmiller825.github.io/JPMD";
 const assetBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const banner = `${assetBase}/assets/jpmd/01_branding/banner_1500x500.png`;
+const icon = `${assetBase}/assets/jpmd/08_footer_ui/icon_logo_small.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
   description:
     "A cinematic Ethereum meme token concept exploring the collision of Wall Street and blockchain culture. Independent and not affiliated with JPMorgan.",
   applicationName: "JPM COIN",
-  icons: { icon: `${assetBase}/images/favicon.png`, apple: `${assetBase}/images/favicon.png` },
+  icons: { icon, apple: icon },
   alternates: { canonical: "/" },
   openGraph: {
     title: "JPM COIN ($JPMD) — The Money Never Sleeps",
@@ -34,21 +36,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "JPM COIN ($JPMD)",
-    images: [
-      {
-        url: "/images/social-banner.webp",
-        width: 1500,
-        height: 500,
-        alt: "JPM COIN $JPMD independent meme token banner",
-      },
-    ],
+    images: [{ url: banner, width: 1500, height: 500, alt: "JPM COIN $JPMD independent meme token banner" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "JPM COIN ($JPMD) — The Money Never Sleeps",
-    description:
-      "An independent Ethereum community meme. Not affiliated with JPMorgan Chase or any bank.",
-    images: ["/images/social-banner.webp"],
+    description: "An independent Ethereum community meme. Not affiliated with JPMorgan Chase or any bank.",
+    images: [banner],
   },
 };
 

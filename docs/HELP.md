@@ -1,6 +1,6 @@
 # JPM COIN ($JPMD) – Site Help
 
-Last updated: October 19, 2026 · Version 2.1
+Last updated: October 19, 2026 · Version 3.0
 
 ## 1. Project identity
 JPM COIN / $JPMD is presented as an independent Ethereum community meme-token concept. It is **not** JPMorgan Chase's official JPM Coin/JPMD deposit token, and must never claim bank issuance, sponsorship, USD redeemability, or association. Preserve the visible disclaimer in the hero, FAQ, and footer whenever editing.
@@ -41,7 +41,7 @@ Every nav button uses smooth scrolling. No secondary pages. The animated progres
 
 ## 5. Animations and accessibility
 
-- Background art is **static WebP** for speed. Motion is section-specific and CSS/GSAP only: hero uses a slow scroll parallax; story cards stagger in; the terminal redraws its illustrative line when the scene switches; vault tiles stagger; how-to-buy cards are linked by arrows on wide screens; the community map pulses; FAQ answers expand.
+- Background art is the static JPEG/PNG pack. Motion is section-specific and CSS/GSAP only: hero entrance plus slow desktop parallax; story chapters stagger; the terminal redraws when the scene switches; the vault door and spec cards reveal; buy steps progress; community cards rise; FAQ answers expand. Phones skip the parallax scrub.
 - Display headlines use Cormorant Garamond. Interface text uses Outfit. Both are self-hosted by Next.js at build time.
 - CSS also animates a secondary floating coin and headline ticker. There are no video tags, videos, GIF timelines, background videos, or video packages.
 - `prefers-reduced-motion` disables decorative animations and uses normal scrolling.
@@ -50,14 +50,17 @@ Every nav button uses smooth scrolling. No secondary pages. The animated progres
 
 ## 6. Images
 
-- All six clean section backgrounds are **original vector-first** drawings exported at precisely **1920 × 1080 WebP**. Editable SVG versions are in `public/images/backgrounds/`.
-- `logo-original.png`: original circular 1024×1024 PNG with RGBA transparency.
-- `logo-original.svg`: editable logo master.
-- `favicon.png`: 64×64 cropped logo.
-- `social-banner.webp`: 1500×500, share/X usage.
-- `telegram-banner.webp`: 1100×520, Telegram branding.
-- `scripts/generate_art.py` recreates background WebPs and vector logo; `scripts/generate_banners.py` builds the banners.
-- Old blurred concept crops were removed. Do not embed screenshots or section mockup images as live backgrounds.
+The live site uses the 65-file pack in `public/assets/jpmd/`. The authoritative file list, dimensions, and alpha flags are in `docs/asset-pack/ASSET_MANIFEST.json`. Regenerate `components/assets.ts` with `node scripts/build_asset_registry.js` if that list changes.
+
+- Scenic JPEGs use `background-size: cover` and a section focal position. Do not stretch square art into those backgrounds.
+- Transparent PNGs (bull, crystal, coins, vault door, icons, logos) use `object-fit: contain`.
+- The desktop hero uses the bull already painted into `02_hero/hero_bg.jpg` and keeps the headline on the right. Phones show `hero_bull.png` in full so the horns are not cropped.
+- `faq_panel.png` is the accordion frame only. Do not add a second CSS border on that panel.
+- `btn_primary.png` and `btn_secondary.png` are skins on real buttons and links.
+- Banners in `01_branding` are the social images and footer downloads. Do not crop their built-in type.
+- Earlier `public/images/backgrounds/scene-*.webp` files are retired and are not referenced.
+
+Placement notes are in `docs/UI_AUDIT.md`.
 
 ## 7. Floki reference usage
 Reference inspiration: https://floki.com/ . Do not reuse Floki logos, mascots, article text, or distinctive branded artwork. The codebase is original and does not ship the reference archive. It borrows only a multi-section, content-rich site approach.

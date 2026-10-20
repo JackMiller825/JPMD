@@ -9,7 +9,9 @@ Then open http://localhost:3000 . Production export: `npm run lint && npm run bu
 
 Stack: Next.js 15 / React 19 / TypeScript / GSAP / Lucide icons / CSS.
 
-Seven connected sections, original 1920×1080 static backgrounds, premium SVG coin emblem, responsive mobile design, semantic FAQ, scrolling effects, illustrative *non-live* trading terminal, and full documentation. **No videos or video dependencies.**
+Seven connected sections built from the 65-image production pack in `public/assets/jpmd/`, with the golden bull as the hero character, a non-live trading terminal, and a semantic FAQ. **No videos or video dependencies.**
+
+Asset index: `docs/asset-pack/ASSET_MANIFEST.json`. Layout notes: `docs/UI_AUDIT.md`. Latest checks: `docs/QA_REPORT.md`.
 
 ## Important setup
 1. `components/config.ts` — supply confirmed official contract, verified DEX pool, Telegram, X, swap URLs and update proof-dependent statuses only when available.
