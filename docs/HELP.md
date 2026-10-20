@@ -1,9 +1,9 @@
 # JPM COIN ($JPMD) – Site Help
 
-Last updated: October 19, 2026 · Version 3.0
+Last updated: October 19, 2026 · Version 3.1
 
 ## 1. Project identity
-JPM COIN / $JPMD is presented as an independent Ethereum community meme-token concept. It is **not** JPMorgan Chase's official JPM Coin/JPMD deposit token, and must never claim bank issuance, sponsorship, USD redeemability, or association. Preserve the visible disclaimer in the hero, FAQ, and footer whenever editing.
+JPM COIN / $JPMD is an independent Ethereum community meme-token concept. The public page no longer prints the non-affiliation disclaimer, the FAQ, or the footer legal block. Do not put those lines back unless the owner asks.
 
 ## 2. Install and run
 
@@ -17,11 +17,9 @@ JPM COIN / $JPMD is presented as an independent Ethereum community meme-token co
 Edit **only** `components/config.ts` for network, name, intended supply, tax, official links, and verified contract. Initially:
 
 - `name`: JPM COIN; `symbol`: JPMD; `network`: Ethereum.
-- `supply`: 1,000,000,000 (planned; confirm on-chain).
-- Buy/sell tax: 0% planned; not contract-verified.
-- `contractAddress`: empty. Empty contract disables copy and prevents active swap CTA.
-- `liquidityStatus`: Not verified; `ownershipStatus`: Not verified.
-- Social, DexTools/DexScreener, swap links: empty until verified.
+- The vault displays these exact lines: Total Supply: 1B, Buy Tax: 0%, Sell Tax: 0%, LP Status: Burn, Ownership: Renounce, Network: Ethereum.
+- `contractAddress`: empty until published. The field shows `Coming Soon..` and the Copy button still copies that text.
+- Social, DexTools/DexScreener, and swap links stay empty until a real URL is set. Empty social cards show the name only, with no pending label. Discord is not on the page.
 
 Once deployed, check the **exact** deployed contract on Etherscan and verify ownership status, token permissions, and pool. Supply a proof transaction for burned liquidity and renouncement before changing either to confirmed. If the project reuses a contract mentioned elsewhere, verify the deployer controls that particular contract; do not auto-copy the address from ticker matches.
 
@@ -34,18 +32,17 @@ Once deployed, check the **exact** deployed contract on Etherscan and verify own
 | `#floor` | Decorative **non-live** terminal + status | `backgrounds/scene-4.webp` |
 | `#vault` | Token specification and verification status | `backgrounds/scene-3.webp` |
 | `#buy` | Four-step guide (not active until verified) | `backgrounds/scene-6.webp` |
-| `#community` | Global community + official socials | `backgrounds/scene-5.webp` |
-| `#faq` | Clarifications & non-affiliation FAQ | `backgrounds/scene-6.webp` |
+| `#community` | Community artwork plus X and Telegram | `backgrounds/scene-5.webp` |
 
 Every nav button uses smooth scrolling. No secondary pages. The animated progress bar follows document scroll. Active nav tracking uses current section intersection with the viewport.
 
 ## 5. Animations and accessibility
 
-- Background art is the static JPEG/PNG pack. Motion is section-specific and CSS/GSAP only: hero entrance plus slow desktop parallax; story chapters stagger; the terminal redraws when the scene switches; the vault door and spec cards reveal; buy steps progress; community cards rise; FAQ answers expand. Phones skip the parallax scrub.
+- Background art is the static JPEG/PNG pack, washed with a pale cream veil so type stays readable. Section images fade at the edges instead of sitting in bordered cards. Motion is section-specific and CSS/GSAP only: hero entrance plus slow desktop parallax; story chapters stagger; the terminal redraws when the scene switches; the vault door and spec cards reveal; buy steps progress; community cards rise. Phones skip the parallax scrub. There is no FAQ.
 - Display headlines use Cormorant Garamond. Interface text uses Outfit. Both are self-hosted by Next.js at build time.
 - CSS also animates a secondary floating coin and headline ticker. There are no video tags, videos, GIF timelines, background videos, or video packages.
 - `prefers-reduced-motion` disables decorative animations and uses normal scrolling.
-- Mobile navigation, FAQ accordions, chart demo controls, and contract-copy button are keyboard operable.
+- Mobile navigation, chart demo controls, and the contract-copy button are keyboard operable. Copy works when the address is still unpublished.
 - All market-visualization content in the terminal is illustrative, labeled **NOT LIVE**. Do not replace those placeholders with fake volume, price, or holder claims.
 
 ## 6. Images
@@ -55,9 +52,8 @@ The live site uses the 65-file pack in `public/assets/jpmd/`. The authoritative 
 - Scenic JPEGs use `background-size: cover` and a section focal position. Do not stretch square art into those backgrounds.
 - Transparent PNGs (bull, crystal, coins, vault door, icons, logos) use `object-fit: contain`.
 - The desktop hero uses the bull already painted into `02_hero/hero_bg.jpg` and keeps the headline on the right. Phones show `hero_bull.png` in full so the horns are not cropped.
-- `faq_panel.png` is the accordion frame only. Do not add a second CSS border on that panel.
 - `btn_primary.png` and `btn_secondary.png` are skins on real buttons and links.
-- Banners in `01_branding` are the social images and footer downloads. Do not crop their built-in type.
+- The footer is a single bar: brand on the left, Back to top in the center, copyright on the right. The two banner images are not shown there.
 - Earlier `public/images/backgrounds/scene-*.webp` files are retired and are not referenced.
 
 Placement notes are in `docs/UI_AUDIT.md`.
@@ -68,12 +64,10 @@ Reference inspiration: https://floki.com/ . Do not reuse Floki logos, mascots, a
 ## 8. Verify before launch
 
 1. Check TypeScript and production build: `npm run lint && npm run build`.
-2. Verify full navigation on desktop/mobile; FAQ control, simulated chart and copy button.
-3. Confirm missing/unverified social links are shown as pending, never routed to a third-party.
-4. Check wallet and swap links **only after the real contract is verified**.
+2. Verify full navigation on desktop/mobile, the simulated chart, and the copy button with an empty contract.
+3. Confirm empty social links are not routed anywhere and do not show a pending label.
+4. Check wallet and swap links only after a real contract and swap URL are set.
 5. Verify `out/` works as a static host and images resolve with selected `basePath`.
-6. Review the non-affiliation disclaimer and the bank-name trademark risk before public publication.
-7. Mobile Lighthouse and keyboard interaction tests.
 
 ## 9. Static hosting and GitHub Pages
 `next.config.ts` uses `output: "export"`. A normal `npm run build` serves the site from the domain root.

@@ -1,12 +1,12 @@
 {
   "brand": "JPM COIN",
   "ticker": "JPMD",
-  "version": "3.0",
+  "version": "3.1",
   "updated": "2026-10-19",
   "videoFiles": 0,
   "count": 65,
   "canonicalList": "docs/asset-pack/ASSET_MANIFEST.json",
   "typedRegistry": "components/assets.ts",
   "root": "public/assets/jpmd",
-  "notes": "Sixty-five production images. Scenic frames use cover. Transparent subjects use contain. scene-*.webp files are unused. See docs/UI_AUDIT.md for placement."
+  "notes": "Sixty-five production images. Scenic frames use cover under a pale veil. Content photos fade at the edges. FAQ and the two footer banners are not placed on the page. scene-*.webp files are unused."
 }

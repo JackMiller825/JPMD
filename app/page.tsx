@@ -11,7 +11,6 @@ const navigation = [
   { label: "Digital Vault", id: "vault" },
   { label: "How to Buy", id: "buy" },
   { label: "Community", id: "community" },
-  { label: "FAQ", id: "faq" },
 ];
 
 const chapters = [
@@ -37,7 +36,7 @@ const chapters = [
     art: "story_3" as AssetId,
     eyebrow: "THE NIGHT SHIFT",
     title: "Then the meme clocked in.",
-    copy: "JPM COIN ($JPMD) is not a bank, not a deposit, and not on the earnings-call guest list. It is an independent community joke about finance discovering a clock with no off switch. The punchline stays on-chain. The disclaimer stays on the marquee.",
+    copy: "JPM COIN ($JPMD) is not a bank, not a deposit, and not on the earnings-call guest list. It is an independent community joke about finance discovering a clock with no off switch. The punchline stays on-chain.",
   },
 ];
 
@@ -54,15 +53,6 @@ const buySteps: { no: string; art: AssetId; icon: AssetId; title: string; copy: 
   { no: "02", art: "step2_eth", icon: "icon_eth", title: "Get some ETH", copy: "ETH pays for the swap and for gas. The network does not invoice you later. It asks up front, politely and immutably." },
   { no: "03", art: "step3_swap", icon: "icon_swap", title: "Verify, then swap", copy: "Match the exact contract, the pool, and the permissions. A familiar ticker is not a signature. Wait until this site publishes a verified address." },
   { no: "04", art: "step4_complete", icon: "icon_check", title: "Read the receipt", copy: "Open the transaction on an Ethereum explorer. Confirm what you received. Nothing on this page is a promise of profit." },
-];
-
-const questions = [
-  { q: "Is this the JPM Coin issued by JPMorgan?", a: "No. JPM COIN ($JPMD) here is an independent community meme-token concept. It is not affiliated with, authorized by, sponsored by, or endorsed by JPMorgan Chase, Kinexys, or the bank's JPM Coin deposit product. It is not bank-backed or redeemable for US dollars." },
-  { q: "What network is the intended token on?", a: "Ethereum mainnet. Do not rely on ticker symbols alone: several unrelated tokens may use JPMD. Verify the exact official contract when one is published." },
-  { q: "Is there a live, verified contract address?", a: token.contractAddress ? `The configured address is ${token.contractAddress}. Independently verify it on-chain before interacting.` : "No contract has been configured for this website yet. Swap links stay off until the contract is confirmed." },
-  { q: "What is the planned supply and tax?", a: `The project configuration targets ${token.supply} tokens and ${token.buyTax} buy / ${token.sellTax} sell tax. These are intended values and must be checked against the deployed contract.` },
-  { q: "Is liquidity burned and ownership renounced?", a: "Neither action is claimed complete here. Liquidity status and ownership status stay unverified until real on-chain proof is added to the site configuration." },
-  { q: "How can I buy?", a: "Set up an Ethereum wallet, acquire ETH for the swap and for gas, then wait for a verified contract. Check permissions and the pool before any trade. No price gain is promised." },
 ];
 
 const scenes = {
@@ -117,14 +107,6 @@ function Action({
   return <button className={className} style={style} type="button" onClick={onClick}>{children}</button>;
 }
 
-function Pending({ children }: { children: React.ReactNode }) {
-  return (
-    <button className="btn ghost" style={{ backgroundImage: `url(${assetSrc("btn_secondary")})` }} type="button" disabled>
-      {children}
-    </button>
-  );
-}
-
 function Terminal() {
   const [view, setView] = useState<"a" | "b" | "c">("a");
   const data = scenes[view];
@@ -166,7 +148,6 @@ export default function Home() {
   const [menu, setMenu] = useState(false);
   const [active, setActive] = useState("home");
   const [progress, setProgress] = useState(0);
-  const [expanded, setExpanded] = useState(-1);
   const [copied, setCopied] = useState(false);
   const live = Boolean(token.contractAddress && token.swapUrl);
 
@@ -237,30 +218,48 @@ export default function Home() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const copyAddress = async () => {
-    if (!token.contractAddress || !navigator.clipboard) return;
+  const contractDisplay = token.contractAddress || "Coming Soon..";
+  const copyAddress = () => {
+    const value = contractDisplay;
+    let ok = false;
     try {
-      await navigator.clipboard.writeText(token.contractAddress);
+      const field = document.createElement("textarea");
+      field.value = value;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-9999px";
+      document.body.appendChild(field);
+      field.focus();
+      field.select();
+      field.setSelectionRange(0, value.length);
+      ok = document.execCommand("copy");
+      field.remove();
+    } catch {
+      ok = false;
+    }
+    const showCopied = () => {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
-    } catch {
-      setCopied(false);
-    }
+    };
+    if (ok) showCopied();
+    if (!navigator.clipboard?.writeText) return;
+    void navigator.clipboard.writeText(value).then(() => {
+      if (!ok) showCopied();
+    }).catch(() => undefined);
   };
 
-  const socials: { id: AssetId; icon: AssetId; name: string; href: string; pending: string }[] = [
-    { id: "community_twitter", icon: "icon_x", name: "X", href: token.twitter, pending: "X LINK PENDING" },
-    { id: "community_telegram", icon: "icon_telegram", name: "Telegram", href: token.telegram, pending: "TELEGRAM LINK PENDING" },
-    { id: "community_discord", icon: "icon_discord", name: "Discord", href: token.discord, pending: "DISCORD LINK PENDING" },
+  const socials: { id: AssetId; icon: AssetId; name: string; href: string }[] = [
+    { id: "community_twitter", icon: "icon_x", name: "X", href: token.twitter },
+    { id: "community_telegram", icon: "icon_telegram", name: "Telegram", href: token.telegram },
   ];
 
-  const vaultCards: { icon: AssetId; k: string; v: string; n: string }[] = [
-    { icon: "icon_supply", k: "Planned supply", v: token.supply, n: "Confirm after deployment" },
-    { icon: "icon_tax", k: "Planned buy tax", v: token.buyTax, n: "Unverified until deployed" },
-    { icon: "icon_tax", k: "Planned sell tax", v: token.sellTax, n: "Unverified until deployed" },
-    { icon: "icon_burn", k: "LP status", v: token.liquidityStatus, n: "Proof required" },
-    { icon: "icon_renounce", k: "Ownership", v: token.ownershipStatus, n: "Proof required" },
-    { icon: "icon_contract", k: "Network", v: token.network, n: "ERC-20 target" },
+  const vaultCards: { icon: AssetId; label: string }[] = [
+    { icon: "icon_supply", label: "Total Supply: 1B" },
+    { icon: "icon_tax", label: "Buy Tax: 0%" },
+    { icon: "icon_tax", label: "Sell Tax: 0%" },
+    { icon: "icon_burn", label: "LP Status: Burn" },
+    { icon: "icon_renounce", label: "Ownership: Renounce" },
+    { icon: "icon_contract", label: "Network: Ethereum" },
   ];
 
   return (
@@ -314,7 +313,6 @@ export default function Home() {
                 <Action tone="ghost" onClick={() => scrollTo("vault")}>The token blueprint</Action>
               </div>
               <Picture id="hero_wallstreet" className="wallSign heroRise" alt="" />
-              <p className="fine heroRise">Not JPMorgan&apos;s official JPM Coin. No bank affiliation, deposit backing, or USD redemption.</p>
             </div>
           </div>
           <button className="scrollHint" type="button" onClick={() => scrollTo("story")}>Scroll to begin</button>
@@ -400,7 +398,6 @@ export default function Home() {
             <div className="lead">
               <p className="eyebrow">Chapter 03 · The digital vault</p>
               <h2>The blueprint. <em>No secret drawers.</em></h2>
-              <p>Planned numbers live here. Deployment, taxes, liquidity, and ownership become facts only after the contract is checked on-chain.</p>
             </div>
             <div className="vaultStage">
               <Picture id="coin_stack" className="coinStack" alt="" />
@@ -409,21 +406,18 @@ export default function Home() {
             </div>
             <div className="vaultGrid">
               {vaultCards.map((card) => (
-                <article className="vaultCard" key={card.k}>
+                <article className="vaultCard" key={card.label}>
                   <Picture id={card.icon} alt="" />
-                  <small>{card.k}</small>
-                  <strong>{card.v}</strong>
-                  <span>{card.n}</span>
+                  <strong>{card.label}</strong>
                 </article>
               ))}
             </div>
-            <button className="contract" type="button" onClick={copyAddress} disabled={!token.contractAddress} aria-label={token.contractAddress ? "Copy JPMD contract address" : "Contract address not available"}>
+            <div className="contract">
               <Picture id="icon_contract" alt="" />
               <span>Contract address</span>
-              <strong>{token.contractAddress || "Coming soon — not verified"}</strong>
-              <em>{token.contractAddress ? (copied ? "Copied" : "Copy") : "Locked"}</em>
-            </button>
-            <p className="proofNote">LP burn and ownership-renounce claims appear only with on-chain proof links. Neither is confirmed.</p>
+              <strong>{contractDisplay}</strong>
+              <button type="button" onClick={copyAddress} aria-label="Copy contract address">{copied ? "Copied" : "Copy"}</button>
+            </div>
           </div>
         </section>
 
@@ -435,7 +429,7 @@ export default function Home() {
             <div className="lead">
               <p className="eyebrow">Chapter 04 · Enter the network</p>
               <h2>Four moves. <em>Zero mystery.</em></h2>
-              <p>There is no trading link until a verified contract and a safe swap URL are configured. This is the path, not the door.</p>
+              <p>This is the path, not the door.</p>
             </div>
             <div className="steps">
               {buySteps.map((step, index) => (
@@ -451,10 +445,7 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <div className="actions">
-              {live ? <Action href={token.swapUrl}>Open verified swap</Action> : <Pending>Waiting for verified CA</Pending>}
-            </div>
-            <p className="fine">Never buy a token because the name or ticker looks familiar.</p>
+            {live && <div className="actions"><Action href={token.swapUrl}>Open verified swap</Action></div>}
           </div>
         </section>
 
@@ -472,13 +463,13 @@ export default function Home() {
             <div className="socialGrid">
               <article className="socialCard wide">
                 <Picture id="community_people" alt="City lights used as community artwork" />
-                <div><Picture id="icon_community" alt="" /><h3>One community</h3><p>Across time zones. No fabricated holder counts.</p></div>
+                <div><Picture id="icon_community" alt="" /><h3>One community</h3></div>
               </article>
               {socials.map((item) => {
                 const body = (
                   <>
                     <Picture id={item.id} alt="" />
-                    <div><Picture id={item.icon} alt="" /><h3>{item.name}</h3><p>{item.href ? "Official link" : item.pending}</p></div>
+                    <div><Picture id={item.icon} alt="" /><h3>{item.name}</h3></div>
                   </>
                 );
                 return item.href ? (
@@ -498,37 +489,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="panel faq" id="faq">
-          <Scene id="faq_bg" />
-          <Atmosphere id="bg_faq_grid" />
-          <div className="fadeTop" aria-hidden="true" />
-          <div className="scrim light" aria-hidden="true" />
-          <div className="wrap">
-            <div className="lead">
-              <p className="eyebrow">The important details</p>
-              <h2>The <em>fine print.</em></h2>
-              <p>Less shouting, more clarity. The answers below are the project&apos;s actual boundaries.</p>
-            </div>
-            <div className="faqLibrary" style={{ backgroundImage: `url(${assetSrc("faq_panel")})` }}>
-              <div className="faqList">
-                {questions.map((item, index) => {
-                  const open = expanded === index;
-                  return (
-                    <div className="faqItem" key={item.q}>
-                      <button type="button" aria-expanded={open} aria-controls={`answer-${index}`} onClick={() => setExpanded(open ? -1 : index)}>
-                        <span>{item.q}</span>
-                        <Picture id={open ? "icon_minus" : "icon_plus"} alt="" />
-                      </button>
-                      <div className={open ? "faqAnswer open" : "faqAnswer"} id={`answer-${index}`} role="region" aria-hidden={!open}>
-                        <p>{item.a}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer>
@@ -544,19 +504,6 @@ export default function Home() {
               <span>$JPMD · Ethereum</span>
             </div>
             <Picture id="icon_eth_small" alt="" />
-          </div>
-          <img className="divider" src={assetSrc("divider")} alt="" />
-          <div className="footerDisclaimer">
-            <strong>Independent community token · Not a bank product</strong>
-            <p>This project is not affiliated with, sponsored, endorsed, or issued by JPMorgan Chase, Kinexys, or any affiliate. It is not JPMorgan&apos;s JPM Coin deposit token. It is not a stablecoin, a bank deposit, or a redeemable claim on USD. Cryptocurrency participation carries risk. Nothing here is investment advice.</p>
-          </div>
-          <div className="brandShots">
-            <a href={assetSrc("banner_1500x500")} download="jpmd-social-banner.png">
-              <Picture id="banner_1500x500" alt="JPM COIN social banner, 1500 by 500" />
-            </a>
-            <a href={assetSrc("tg_banner_1100x520")} download="jpmd-telegram-banner.png">
-              <Picture id="tg_banner_1100x520" alt="JPM COIN Telegram banner, 1100 by 520" />
-            </a>
           </div>
           <button className="backToTop" type="button" onClick={() => scrollTo("home")}>Back to top</button>
           <small>© 2026 JPM COIN community</small>
