@@ -52,8 +52,8 @@ The live site uses the 65-file pack in `public/assets/jpmd/`. The authoritative 
 - Scenic JPEGs use `background-size: cover` and a section focal position. Do not stretch square art into those backgrounds.
 - Transparent PNGs (bull, crystal, coins, vault door, icons, logos) use `object-fit: contain`.
 - The desktop hero uses the bull already painted into `02_hero/hero_bg.jpg` and keeps the headline on the right. Phones show `hero_bull.png` in full so the horns are not cropped.
-- `btn_primary.png` and `btn_secondary.png` are skins on real buttons and links.
-- The footer is a single bar: brand on the left, Back to top in the center, copyright on the right. The two banner images are not shown there.
+- Buttons are drawn in CSS: a larger soft pill with a thin border. The button PNGs are not used as skins.
+- The footer is a thin bar with a soft top edge: brand on the left, Back to top in the center, X and Telegram marks on the right. Those marks open `token.twitter` and `token.telegram` once the URLs are set.
 - Earlier `public/images/backgrounds/scene-*.webp` files are retired and are not referenced.
 
 Placement notes are in `docs/UI_AUDIT.md`.

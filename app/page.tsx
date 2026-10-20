@@ -100,11 +100,47 @@ function Action({
   tone?: "primary" | "ghost";
 }) {
   const className = tone === "ghost" ? "btn ghost" : "btn";
-  const style = { backgroundImage: `url(${assetSrc("btn_secondary")})` };
   if (href) {
-    return <a className={className} style={style} href={href} target="_blank" rel="noreferrer">{children}</a>;
+    return <a className={className} href={href} target="_blank" rel="noreferrer">{children}</a>;
   }
-  return <button className={className} style={style} type="button" onClick={onClick}>{children}</button>;
+  return <button className={className} type="button" onClick={onClick}>{children}</button>;
+}
+
+function FooterMarks() {
+  const marks = [
+    { href: token.twitter, label: "X" },
+    { href: token.telegram, label: "Telegram" },
+  ];
+  return (
+    <div className="footerMarks">
+      {marks.map((mark) => {
+        const graphic = mark.label === "X" ? (
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="21" />
+            <path d="M22 22l7 7M35 35l7 7M42 22l-7 7M29 35l-7 7" />
+            <rect x="24" y="29" width="7" height="5.2" rx="2" />
+            <rect x="33" y="29" width="7" height="5.2" rx="2" />
+            <path d="M31 31.6h2" />
+            <path d="M45 14c3.4.4 5.2 3.6 3.6 6.4" />
+            <path d="M47.2 13.2c2.6 2.2 3 4.8 1.4 7.2" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="21" />
+            <path d="M19 33 L46 21 L37 45 L30.5 36.5 Z" />
+            <path d="M30.5 36.5 L46 21" />
+            <path d="M28 35.2c1.8 1.6 3.6 1.6 5.2 0" />
+            <path d="M24 40.5l3.2-2.2" />
+          </svg>
+        );
+        return mark.href ? (
+          <a key={mark.label} href={mark.href} target="_blank" rel="noreferrer" aria-label={mark.label}>{graphic}</a>
+        ) : (
+          <span key={mark.label} aria-label={mark.label}>{graphic}</span>
+        );
+      })}
+    </div>
+  );
 }
 
 function Terminal() {
@@ -119,7 +155,7 @@ function Terminal() {
       </div>
       <div className="terminalBody">
         <div className="terminalBar">
-          <span>JPMD / ETH <small>CONCEPT DISPLAY</small></span>
+          <span>JPMD / WETH <small>CONCEPT DISPLAY</small></span>
           <div className="terminalTabs" role="group" aria-label="Illustration scenes">
             {(["a", "b", "c"] as const).map((key) => (
               <button key={key} type="button" aria-pressed={view === key} onClick={() => setView(key)}>
@@ -413,7 +449,7 @@ export default function Home() {
               <Picture id="icon_contract" alt="" />
               <span>Contract address</span>
               <strong>{contractDisplay}</strong>
-              <button type="button" className="btn" style={{ backgroundImage: `url(${assetSrc("btn_secondary")})` }} onClick={copyAddress} aria-label="Copy contract address">{copied ? "Copied" : "Copy"}</button>
+              <button type="button" className="btn" onClick={copyAddress} aria-label="Copy contract address">{copied ? "Copied" : "Copy"}</button>
             </div>
           </div>
         </section>
@@ -475,7 +511,6 @@ export default function Home() {
         <Scene id="footer_bg" className="pos-footer" />
         <Atmosphere id="bg_stars" />
         <img className="footerLight" src={assetSrc("bg_lightline")} alt="" />
-        <div className="fadeTop" aria-hidden="true" />
         <div className="wrap footerGrid">
           <div className="footerBrand">
             <Picture id="icon_logo_small" alt="JPM COIN logo" />
@@ -486,7 +521,7 @@ export default function Home() {
             <Picture id="icon_eth_small" alt="" />
           </div>
           <button className="backToTop" type="button" onClick={() => scrollTo("home")}>Back to top</button>
-          <small>© 2026 JPM COIN community</small>
+          <FooterMarks />
         </div>
       </footer>
     </div>
