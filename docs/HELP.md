@@ -17,7 +17,7 @@ JPM COIN / $JPMD is an independent Ethereum community meme-token concept. The pu
 Edit **only** `components/config.ts` for network, name, intended supply, tax, official links, and verified contract. Initially:
 
 - `name`: JPM COIN; `symbol`: JPMD; `network`: Ethereum.
-- The vault displays these exact lines: Total Supply: 1B, Buy Tax: 0%, Sell Tax: 0%, LP Status: Burn, Ownership: Renounce, Network: Ethereum.
+- The vault displays: Total Supply: 1 Billion, Buy Tax: 0%, Sell Tax: 0%, LP Status: Burn, Ownership: Renounce, Network: Ethereum.
 - `contractAddress`: empty until published. The field shows `Coming Soon..` and the Copy button still copies that text.
 - Social, DexTools/DexScreener, and swap links stay empty until a real URL is set. Empty social cards show the name only, with no pending label. Discord is not on the page.
 
@@ -32,7 +32,7 @@ Once deployed, check the **exact** deployed contract on Etherscan and verify own
 | `#floor` | Decorative **non-live** terminal + status | `backgrounds/scene-4.webp` |
 | `#vault` | Token specification and verification status | `backgrounds/scene-3.webp` |
 | `#buy` | Four-step guide (not active until verified) | `backgrounds/scene-6.webp` |
-| `#community` | Community artwork plus X and Telegram | `backgrounds/scene-5.webp` |
+| `#community` | Four images in one row. X and Telegram open the URLs in config when those fields are set. | `backgrounds/scene-5.webp` |
 
 Every nav button uses smooth scrolling. No secondary pages. The animated progress bar follows document scroll. Active nav tracking uses current section intersection with the viewport.
 

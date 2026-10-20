@@ -48,11 +48,11 @@ const storyIcons: { id: AssetId; label: string }[] = [
   { id: "icon_growth", label: "Curiosity" },
 ];
 
-const buySteps: { no: string; art: AssetId; icon: AssetId; title: string; copy: string }[] = [
-  { no: "01", art: "step1_wallet", icon: "icon_wallet", title: "Prepare a wallet", copy: "Use a trusted self-custody Ethereum wallet. Write the recovery phrase down somewhere that is not a screenshot named 'final-final'." },
-  { no: "02", art: "step2_eth", icon: "icon_eth", title: "Get some ETH", copy: "ETH pays for the swap and for gas. The network does not invoice you later. It asks up front, politely and immutably." },
-  { no: "03", art: "step3_swap", icon: "icon_swap", title: "Verify, then swap", copy: "Match the exact contract, the pool, and the permissions. A familiar ticker is not a signature. Wait until this site publishes a verified address." },
-  { no: "04", art: "step4_complete", icon: "icon_check", title: "Read the receipt", copy: "Open the transaction on an Ethereum explorer. Confirm what you received. Nothing on this page is a promise of profit." },
+const buySteps: { no: string; art: AssetId; title: string; copy: string }[] = [
+  { no: "01", art: "step1_wallet", title: "Prepare a wallet", copy: "Use a trusted self-custody Ethereum wallet. Write the recovery phrase down somewhere that is not a screenshot named 'final-final'." },
+  { no: "02", art: "step2_eth", title: "Get some ETH", copy: "ETH pays for the swap and for gas. The network does not invoice you later. It asks up front, politely and immutably." },
+  { no: "03", art: "step3_swap", title: "Verify, then swap", copy: "Match the exact contract, the pool, and the permissions. A familiar ticker is not a signature. Wait until this site publishes a verified address." },
+  { no: "04", art: "step4_complete", title: "Read the receipt", copy: "Open the transaction on an Ethereum explorer. Confirm what you received. Nothing on this page is a promise of profit." },
 ];
 
 const scenes = {
@@ -100,7 +100,7 @@ function Action({
   tone?: "primary" | "ghost";
 }) {
   const className = tone === "ghost" ? "btn ghost" : "btn";
-  const style = { backgroundImage: `url(${assetSrc(tone === "ghost" ? "btn_secondary" : "btn_primary")})` };
+  const style = { backgroundImage: `url(${assetSrc("btn_secondary")})` };
   if (href) {
     return <a className={className} style={style} href={href} target="_blank" rel="noreferrer">{children}</a>;
   }
@@ -248,13 +248,15 @@ export default function Home() {
     }).catch(() => undefined);
   };
 
-  const socials: { id: AssetId; icon: AssetId; name: string; href: string }[] = [
-    { id: "community_twitter", icon: "icon_x", name: "X", href: token.twitter },
-    { id: "community_telegram", icon: "icon_telegram", name: "Telegram", href: token.telegram },
+  const communityTiles: { id: AssetId; label: string; href: string }[] = [
+    { id: "community_people", label: "Community", href: "" },
+    { id: "community_twitter", label: "X", href: token.twitter },
+    { id: "community_telegram", label: "Telegram", href: token.telegram },
+    { id: "community_chart", label: "Community chart", href: "" },
   ];
 
   const vaultCards: { icon: AssetId; label: string }[] = [
-    { icon: "icon_supply", label: "Total Supply: 1B" },
+    { icon: "icon_supply", label: "Total Supply: 1 Billion" },
     { icon: "icon_tax", label: "Buy Tax: 0%" },
     { icon: "icon_tax", label: "Sell Tax: 0%" },
     { icon: "icon_burn", label: "LP Status: Burn" },
@@ -278,7 +280,6 @@ export default function Home() {
             </button>
           ))}
         </nav>
-        <Action onClick={() => scrollTo(live ? "buy" : "vault")}>{live ? "Buy $JPMD" : "Launch status"}</Action>
         <button className="mobilemenu" type="button" aria-label={menu ? "Close menu" : "Open menu"} aria-expanded={menu} onClick={() => setMenu((open) => !open)}>
           <span /><span /><span />
         </button>
@@ -381,10 +382,6 @@ export default function Home() {
                   <Picture id="data_panel" alt="Decorative gold and blue market frame, not live data" />
                   <figcaption>ILLUSTRATION · NOT LIVE</figcaption>
                 </figure>
-                <div className="floorStat"><small>Network</small><strong>Ethereum</strong><span>Mainnet · ERC-20 target</span></div>
-                <div className="floorStat"><small>Market data</small><strong>Not connected</strong><span>No fabricated prices</span></div>
-                <div className="floorStat"><small>Pool</small><strong>{token.contractAddress ? "Check contract" : "Awaiting CA"}</strong><span>Official contract required</span></div>
-                {token.dextools ? <Action href={token.dextools}>View verified pool</Action> : <Action tone="ghost" onClick={() => scrollTo("vault")}>Check launch status</Action>}
               </aside>
             </div>
           </div>
@@ -416,7 +413,7 @@ export default function Home() {
               <Picture id="icon_contract" alt="" />
               <span>Contract address</span>
               <strong>{contractDisplay}</strong>
-              <button type="button" onClick={copyAddress} aria-label="Copy contract address">{copied ? "Copied" : "Copy"}</button>
+              <button type="button" className="btn" style={{ backgroundImage: `url(${assetSrc("btn_secondary")})` }} onClick={copyAddress} aria-label="Copy contract address">{copied ? "Copied" : "Copy"}</button>
             </div>
           </div>
         </section>
@@ -436,7 +433,6 @@ export default function Home() {
                 <article className="step" key={step.no}>
                   <div className="stepMedia"><Picture id={step.art} alt="" /></div>
                   <div className="stepBody">
-                    <Picture id={step.icon} alt="" />
                     <span>{step.no}</span>
                     <h3>{step.title}</h3>
                     <p>{step.copy}</p>
@@ -458,34 +454,18 @@ export default function Home() {
             <div className="lead">
               <p className="eyebrow">Chapter 05 · A global night shift</p>
               <h2>The whole world <em>is still awake.</em></h2>
-              <p>One independent community, stretched across time zones. Bring jokes and your own research. Membership counts are not invented here.</p>
+              <p>One independent community, stretched across time zones. Bring jokes and your own research.</p>
             </div>
             <div className="socialGrid">
-              <article className="socialCard wide">
-                <Picture id="community_people" alt="City lights used as community artwork" />
-                <div><Picture id="icon_community" alt="" /><h3>One community</h3></div>
-              </article>
-              {socials.map((item) => {
-                const body = (
-                  <>
-                    <Picture id={item.id} alt="" />
-                    <div><Picture id={item.icon} alt="" /><h3>{item.name}</h3></div>
-                  </>
-                );
+              {communityTiles.map((item) => {
+                const image = <Picture id={item.id} alt={item.label} />;
                 return item.href ? (
-                  <a className="socialCard" key={item.name} href={item.href} target="_blank" rel="noreferrer">{body}</a>
+                  <a className="socialCard" key={item.id} href={item.href} target="_blank" rel="noreferrer" aria-label={item.label}>{image}</a>
                 ) : (
-                  <article className="socialCard" key={item.name} aria-disabled="true">{body}</article>
+                  <article className="socialCard" key={item.id}>{image}</article>
                 );
               })}
             </div>
-            <figure className="chartNote">
-              <Picture id="community_chart" alt="" />
-              <figcaption>
-                <Picture id="icon_chart" alt="" />
-                <span>Decorative growth artwork. Not a performance claim, price history, or promise of return.</span>
-              </figcaption>
-            </figure>
           </div>
         </section>
 
