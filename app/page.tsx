@@ -320,7 +320,7 @@ export default function Home() {
         </section>
 
         <div className="ticker" aria-hidden="true">
-          <div>Independent Ethereum meme · One billion planned supply · No bank affiliation · Illustrations are not live markets · Independent Ethereum meme · One billion planned supply · No bank affiliation · Illustrations are not live markets · </div>
+          <div>Independent Ethereum meme · One billion total supply · No Tax · LP Burned · Ownership Renounced · Independent Ethereum meme · One billion total supply · No Tax · LP Burned · Ownership Renounced · </div>
         </div>
 
         <section className="panel story" id="story">
