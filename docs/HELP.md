@@ -38,7 +38,7 @@ Every nav button uses smooth scrolling. No secondary pages. The animated progres
 
 ## 5. Animations and accessibility
 
-- Background art is the static JPEG/PNG pack, washed with a pale cream veil so type stays readable. Section images fade at the edges instead of sitting in bordered cards. Motion is section-specific and CSS/GSAP only: hero entrance plus slow desktop parallax; story chapters stagger; the terminal redraws when the scene switches; the vault door and spec cards reveal; buy steps progress; community cards rise. Phones skip the parallax scrub. There is no FAQ.
+- Background art is the static JPEG/PNG pack, washed with a pale cream veil so type stays readable. Section scenes fade into each other, so the scroll reads as one page. Section images fade at the edges instead of sitting in bordered cards. Motion is section-specific and CSS/GSAP only: hero entrance plus slow desktop parallax; story chapters stagger; the terminal redraws when the scene switches; the vault door and spec cards reveal; buy steps progress; community cards rise. Phones skip the parallax scrub. There is no FAQ.
 - Display headlines use Cormorant Garamond. Interface text uses Outfit. Both are self-hosted by Next.js at build time.
 - CSS also animates a secondary floating coin and headline ticker. There are no video tags, videos, GIF timelines, background videos, or video packages.
 - `prefers-reduced-motion` disables decorative animations and uses normal scrolling.
