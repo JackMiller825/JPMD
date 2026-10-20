@@ -297,15 +297,12 @@ footer {
 .divider { width: min(420px, 100%); height: 28px; object-fit: contain; object-position: left center; }
 .backToTop { justify-self: center; background: none; border: 0; color: var(--text); letter-spacing: 0.18em; text-transform: uppercase; font-size: 11px; padding: 0; }
 .footerMarks { justify-self: end; display: flex; align-items: center; gap: 10px; }
-.footerMarks a, .footerMarks span {
-  width: 52px; height: 52px; display: grid; place-items: center; color: #1c1610;
-  border-radius: 50%;
+.footerMarks a, .footerMarks span { display: grid; place-items: center; border-radius: 50%; }
+.footerMarks img {
+  width: 68px; height: 68px; object-fit: cover; border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(232, 186, 115, 0.65);
 }
-.footerMarks svg { width: 52px; height: 52px; }
-.footerMarks circle, .footerMarks rect, .footerMarks path { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-.footerMarks circle { stroke-width: 1.4; }
-.footerMarks path, .footerMarks rect { stroke-width: 1.8; }
-.footerMarks a:hover, .footerMarks span:hover { color: #6d4510; }
+.footerMarks a:hover img, .footerMarks span:hover img { transform: translateY(-2px); }
 
 @media (prefers-reduced-motion: no-preference) {
   .chartLine { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1s ease forwards; }
