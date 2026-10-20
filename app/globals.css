@@ -79,7 +79,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--gold-bright); o
 .btn {
   position: relative; overflow: hidden; isolation: isolate;
   display: inline-flex; align-items: center; justify-content: center; gap: 14px;
-  min-height: 60px; padding: 0 34px 0 38px; white-space: nowrap;
+  min-height: 60px; padding: 0 22px 0 38px; white-space: nowrap;
   border: 1px solid rgba(214, 170, 92, 0.75);
   border-radius: 2px;
   background: linear-gradient(180deg, #24201a 0%, #14110d 100%);
@@ -88,8 +88,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--gold-bright); o
   transition: color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
 }
 .btn::after {
-  content: ""; width: 18px; height: 1px; background: currentColor;
-  transition: width 0.35s ease;
+  content: ""; flex: none; width: 30px; height: 1px; background: currentColor;
+  transform: scaleX(0.6); transform-origin: left center;
+  transition: transform 0.35s ease;
 }
 .btn::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
@@ -106,7 +107,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--gold-bright); o
 .btn:hover:not(:disabled) { transform: translateY(-1px); color: #ffe9bd; }
 .btn.ghost:hover:not(:disabled) { color: #6d4510; }
 .btn:hover:not(:disabled)::before { transform: translateX(120%); }
-.btn:hover:not(:disabled)::after { width: 30px; }
+.btn:hover:not(:disabled)::after { transform: scaleX(1); }
 .btn:disabled { filter: saturate(0.7); opacity: 0.85; }
 .actions { display: flex; flex-wrap: wrap; gap: 16px; }
 
