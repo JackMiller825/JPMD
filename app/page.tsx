@@ -114,7 +114,16 @@ function FooterMarks() {
   return (
     <div className="footerMarks">
       {marks.map((mark) => {
-        const graphic = <img src={assetSrc(mark.label === "X" ? "icon_x" : "icon_telegram")} alt="" />;
+        const graphic = mark.label === "X" ? (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M22.46 6.01a8.5 8.5 0 0 1-2.46.69 4.27 4.27 0 0 0 1.88-2.36 8.53 8.53 0 0 1-2.71 1.04 4.26 4.26 0 0 0-7.26 3.88A12.09 12.09 0 0 1 3.15 4.9a4.26 4.26 0 0 0 1.32 5.68 4.23 4.23 0 0 1-1.93-.53v.05a4.26 4.26 0 0 0 3.42 4.18 4.27 4.27 0 0 1-1.92.07 4.26 4.26 0 0 0 3.98 2.96A8.54 8.54 0 0 1 2 18.41a12.06 12.06 0 0 0 6.53 1.91c7.84 0 12.13-6.49 12.13-12.12 0-.18-.01-.37-.01-.55a8.67 8.67 0 0 0 2.81-2.64z" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.8 11.2 21.2 3.2 14.6 21l-3.6-7.2L2.8 11.2z" />
+            <path d="M11 13.8 21.2 3.2" />
+          </svg>
+        );
         return mark.href ? (
           <a key={mark.label} href={mark.href} target="_blank" rel="noreferrer" aria-label={mark.label}>{graphic}</a>
         ) : (
